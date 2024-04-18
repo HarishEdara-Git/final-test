@@ -10,7 +10,7 @@ env:
   CLUSTER_NAME: harisheks  # Replace with your EKS cluster name
   NAMESPACE: my-namespace  # Replace with your namespace
 
-jobs:
+jobs: 
   deploy:
     name: Deploy Pod and Service
     runs-on: ubuntu-latest
@@ -34,28 +34,19 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           port: ${{ secrets.SERVER_PORT }}
           script: |
-            # Commands to execute on the server after SSH connection
+            # Commands to execute on the server after SSH connectio
             echo "Connected to server"
             # Add your additional commands here
-           
-      - name: Update Kubeconfig Server Address
+
+      - name: Update kubeconfig with EKS credentials
+        run: aws eks update-kubeconfig --name ${{ env.CLUSTER_NAME }} --region ${{ env.AWS_REGION }} --kubeconfig ~/.kube/config
+
+      - name: Update Kubernetes cluster endpoint URL
         run: |
-          # Update with your actual server address (replace https://1E122A519D99993356246483D0C2739E.yl4.ap-south-1.eks.amazonaws.com)
-          SERVER_ADDRESS="https://1E122A519D99993356246483D0C2739E.yl4.ap-south-1.eks.amazonaws.com"
-         
-          # Read the existing kubeconfig content
-          KUBECONFIG_CONTENT=$(cat /home/runner/.kube/config)
-
-          # Update the server address using sed (replace placeholder with actual field name)
-          UPDATED_KUBECONFIG_CONTENT=$(echo "$KUBECONFIG_CONTENT" | sed "s/server: https.*/server: $SERVER_ADDRESS/")
-
-          # Write the updated content to a temporary file
-          echo "$UPDATED_KUBECONFIG_CONTENT" > temp_kubeconfig.yaml
-
-          # Move the temporary file to the actual kubeconfig location (replace if needed)
-          mv temp_kubeconfig.yaml /home/runner/.kube/config
-
-          echo "Kubeconfig server address updated successfully!"
+          kubectl config set-cluster harisheks --server=https://1E122A519D99993356246483D0C2739E.yl4.ap-south-1.eks.amazonaws.com
 
       - name: Verify kubeconfig
         run: kubectl config view
+
+      - name: Apply deployment.yml
+        run: kubectl apply -f deployment.yml -n ${{ env.NAMESPACE }}
