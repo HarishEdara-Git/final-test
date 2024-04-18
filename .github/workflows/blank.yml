@@ -37,8 +37,9 @@ jobs:
             # Commands to execute on the server after SSH connectio
             echo "Connected to server"
             # Add your additional commands here
-      - name: Update kubeconfig with EKS credentials
-        run: kubectl apply -f deployment.yml -n ${{ env.NAMESPACE }} --server ${{ secrets.EKS_CLUSTER_ENDPOINT }}
+      - name: Update kubeconfig file
+        run: |
+          sed -i 's|https://1E1***A519D99993356246483D0C2739E.yl4.ap-south-1.eks.amazonaws.com|https://1E122A519D99993356246483D0C2739E.yl4.ap-south-1.eks.amazonaws.com|' ~/.kube/config
       - name: Verify kubeconfig
         run: kubectl config view
      
