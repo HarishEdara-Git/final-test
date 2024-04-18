@@ -27,7 +27,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: SSH into server
+      - name: SSH into Bastion Host
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SERVER_HOST }}
@@ -35,13 +35,12 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           port: ${{ secrets.SERVER_PORT }}
           script: |
-            # Commands to execute on the server after SSH connectio
-            echo "Connected to server"
-            # Add your additional commands here
-      - name: Update kubeconfig with EKS credentials
-        run: aws eks update-kubeconfig --name ${{ env.CLUSTER_NAME }} --region ${{ env.AWS_REGION }} --kubeconfig ~/.kube/config
-      - name: Verify kubeconfig
-        run: kubectl config view
+            # Commands to execute on the Bastion Host
+            # Update kubeconfig with the private EKS API server
+            aws eks update-kubeconfig --name ${{ env.CLUSTER_NAME }} --region ${{ env.AWS_REGION }} --kubeconfig ~/.kube/config
 
-      - name: Apply deployment.yml
-        run: kubectl apply -f deployment.yml -n ${{ env.NAMESPACE }}
+            # Verify kubeconfig
+            kubectl config view
+
+            # Apply deployment.yml
+            kubectl apply -f deployment.yml -n ${{ env.NAMESPACE }}
