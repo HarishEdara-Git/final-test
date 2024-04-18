@@ -8,7 +8,7 @@ on:
 
 env:
   AWS_REGION: ap-south-1 # Replace with your AWS region
-  CLUSTER_NAME: harisheks  # Replace with your EKS cluster name
+  CLUSTER_NAME: harisheks  # Replace with your EKS cluster nam
   NAMESPACE: my-namespace  # Replace with your namespace
 
 jobs:
