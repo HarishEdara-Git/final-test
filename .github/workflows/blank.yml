@@ -44,7 +44,7 @@ jobs:
           SERVER_ADDRESS="https://1E122A519D99993356246483D0C2739E.yl4.ap-south-1.eks.amazonaws.com"
           
           # Read the existing kubeconfig content
-          KUBECONFIG_CONTENT=$(cat $HOME/.kube/config)
+          KUBECONFIG_CONTENT=$(cat .kube/config)
 
           # Update the server address using sed (replace placeholder with actual field name)
           UPDATED_KUBECONFIG_CONTENT=$(echo "$KUBECONFIG_CONTENT" | sed "s/server: https.*/server: $SERVER_ADDRESS/")
@@ -53,7 +53,7 @@ jobs:
           echo "$UPDATED_KUBECONFIG_CONTENT" > temp_kubeconfig.yaml
 
           # Move the temporary file to the actual kubeconfig location (replace if needed)
-          mv temp_kubeconfig.yaml $HOME/.kube/config
+          mv temp_kubeconfig.yaml .kube/config
 
           echo "Kubeconfig server address updated successfully!"
 
