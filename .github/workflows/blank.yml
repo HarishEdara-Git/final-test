@@ -35,6 +35,8 @@ jobs:
           port: ${{ secrets.SERVER_PORT }}
           script: |
             scp -i ${{ secrets.SERVER_SSH_KEY }} deployment.yml ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }}:/root
+            pwd 
+            ls
             aws eks update-kubeconfig --name ${{ env.CLUSTER_NAME }} --region ${{ env.AWS_REGION }} --kubeconfig ~/.kube/config
             kubectl apply -f deployment.yml -n ${{ env.NAMESPACE }}
       - name: Apply deployment.yml
