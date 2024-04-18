@@ -10,7 +10,7 @@ env:
   CLUSTER_NAME: harisheks  # Replace with your EKS cluster name
   NAMESPACE: my-namespace  # Replace with your namespace
 
-jobs:
+jobs: 
   deploy:
     name: Deploy Pod and Service
     runs-on: ubuntu-latest
