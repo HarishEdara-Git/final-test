@@ -38,10 +38,7 @@ jobs:
             echo "Connected to server"
             # Add your additional commands here
       - name: Update kubeconfig with EKS credentials
-        #run: aws eks update-kubeconfig --name ${{ env.CLUSTER_NAME }} --region ${{ env.AWS_REGION }} --kubeconfig ~/.kube/config
         run: kubectl apply -f deployment.yml -n ${{ env.NAMESPACE }} --server ${{ secrets.EKS_CLUSTER_ENDPOINT }}
       - name: Verify kubeconfig
         run: kubectl config view
-
-      - name: Apply deployment.yml
-        #run: kubectl apply -f deployment.yml -n ${{ env.NAMESPACE }}
+     
