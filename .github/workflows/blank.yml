@@ -38,24 +38,10 @@ jobs:
             echo "Connected to server"
             # Add your additional commands here
             
-      - name: Update Kubeconfig Server Address
+      - name: Update kubeconfig with EKS credentials
         run: |
-          # Update with your actual server address (replace https://1E122A519D99993356246483D0C2739E.yl4.ap-south-1.eks.amazonaws.com) 
-          SERVER_ADDRESS="https://1E122A519D99993356246483D0C2739E.yl4.ap-south-1.eks.amazonaws.com"
-          
-          # Read the existing kubeconfig content
-          KUBECONFIG_CONTENT=$(cat .kube/config)
+          aws eks update-kubeconfig --name ${{ env.CLUSTER_NAME }} --region ${{ env.AWS_REGION }} --kubeconfig ~/.kube/config
+          kubectl config view
 
-          # Update the server address using sed (replace placeholder with actual field name)
-          UPDATED_KUBECONFIG_CONTENT=$(echo "$KUBECONFIG_CONTENT" | sed "s/server: https.*/server: $SERVER_ADDRESS/")
-
-          # Write the updated content to a temporary file
-          echo "$UPDATED_KUBECONFIG_CONTENT" > temp_kubeconfig.yaml
-
-          # Move the temporary file to the actual kubeconfig location (replace if needed)
-          mv temp_kubeconfig.yaml .kube/config
-
-          echo "Kubeconfig server address updated successfully!"
-
-      - name: Verify kubeconfig
-        run: kubectl config view
+      - name: Apply deployment.yml
+        run: kubectl apply -f deployment.yml -n ${{ env.NAMESPACE }}
