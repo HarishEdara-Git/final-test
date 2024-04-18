@@ -34,11 +34,28 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           port: ${{ secrets.SERVER_PORT }}
           script: |
-            # Commands to execute on the server after SSH connectio
+            # Commands to execute on the server after SSH connection
             echo "Connected to server"
             # Add your additional commands here
-      - name: Update kubeconfig file
-        run: sed -i 's|https://1E1***A519D99993356246483D0C2739E.yl4.ap-south-1.eks.amazonaws.com|https://1E122A519D99993356246483D0C2739E.yl4.ap-south-1.eks.amazonaws.com|' ~/.kube/config
+            
+      - name: Update Kubeconfig Server Address
+        run: |
+          # Update with your actual server address (replace https://1E122A519D99993356246483D0C2739E.yl4.ap-south-1.eks.amazonaws.com) 
+          SERVER_ADDRESS="https://1E122A519D99993356246483D0C2739E.yl4.ap-south-1.eks.amazonaws.com"
+          
+          # Read the existing kubeconfig content
+          KUBECONFIG_CONTENT=$(cat $HOME/.kube/config)
+
+          # Update the server address using sed (replace placeholder with actual field name)
+          UPDATED_KUBECONFIG_CONTENT=$(echo "$KUBECONFIG_CONTENT" | sed "s/server: https.*/server: $SERVER_ADDRESS/")
+
+          # Write the updated content to a temporary file
+          echo "$UPDATED_KUBECONFIG_CONTENT" > temp_kubeconfig.yaml
+
+          # Move the temporary file to the actual kubeconfig location (replace if needed)
+          mv temp_kubeconfig.yaml $HOME/.kube/config
+
+          echo "Kubeconfig server address updated successfully!"
+
       - name: Verify kubeconfig
         run: kubectl config view
-     
