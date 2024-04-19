@@ -3,7 +3,7 @@ name: My EKS Workflow
 on:
   push:
     branches:
-      - main
+      - main  # Update branch name if needed
 
 jobs:
   build-and-deploy:
@@ -12,19 +12,41 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Install AWS CLI
+      - name: Install AWS CLI (optional, adjust based on your setup)
         run: |
           sudo apt-get update
-          sudo apt-get install -y awscli jq
-      - name: Configure AWS credentials
+          sudo apt-get install -y awscli jq  # Install jq if needed for parsing outputs
+
+      - name: Configure AWS credentials (assuming pre-configured access)
         run: |
           aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws configure set region ${{ secrets.AWS_REGION }}
+
       - name: Update kubeconfig with EKS credentials
         run: aws eks update-kubeconfig --name harisheks --region ap-south-1 --kubeconfig ~/.kube/config
 
-      - name: Deploy to EKS Cluster
-        run: |
-          # Add your deployment commands here
-          kubectl apply -f .github/workflows/deployment.yml -n my-namespace
+      - name: Build and Deploy (uses shared script)
+        run: ./scripts/build_deploy.sh "${{ secrets.CLUSTER_NAME }}" "${{ secrets.REGION }}" "${{ secrets.NAMESPACE }}" ".github/workflows/deployment.yml"
+
+**Changes Made:**
+
+- The original workflow steps are mostly preserved.
+- The `Deploy to EKS Cluster` step is replaced with a call to the `build_deploy.sh` script.
+- The script arguments are passed within double quotes:
+    - `CLUSTER_NAME`: Replace with the actual EKS cluster name for this workflow (secret or environment variable).
+    - `REGION`: Replace with the AWS region where the EKS cluster is deployed (secret or environment variable).
+    - `NAMESPACE`: Replace with the Kubernetes namespace where you want to deploy your application (secret or environment variable).
+    - `.github/workflows/deployment.yml`: Path to your deployment YAML file within the repository.
+
+**Important Notes:**
+
+- Update the placeholder values for `CLUSTER_NAME`, `REGION`, and `NAMESPACE` with the appropriate secrets or environment variables defined in your repository settings.
+- Ensure the self-hosted runner user has permissions to execute the script (`~/scripts/build_deploy.sh`) and access the deployment file.
+
+**Additional Tips:**
+
+- Consider using conditional logic within the `build_deploy.sh` script to handle potential differences in deployment configurations for separate repositories.
+- Explore using environment variables within the script itself to provide further customization options.
+
+This updated workflow YAML file leverages the shared `build_deploy.sh` script for deployment, allowing you to manage common logic in one place while enabling deployment from both your repositories.
