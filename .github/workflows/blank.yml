@@ -28,25 +28,3 @@ jobs:
 
       - name: Build and Deploy (uses shared script)
         run: ./scripts/build_deploy.sh "${{ secrets.CLUSTER_NAME }}" "${{ secrets.REGION }}" "${{ secrets.NAMESPACE }}" ".github/workflows/deployment.yml"
-
-**Changes Made:**
-
-- The original workflow steps are mostly preserved.
-- The `Deploy to EKS Cluster` step is replaced with a call to the `build_deploy.sh` script.
-- The script arguments are passed within double quotes:
-    - `CLUSTER_NAME`: Replace with the actual EKS cluster name for this workflow (secret or environment variable).
-    - `REGION`: Replace with the AWS region where the EKS cluster is deployed (secret or environment variable).
-    - `NAMESPACE`: Replace with the Kubernetes namespace where you want to deploy your application (secret or environment variable).
-    - `.github/workflows/deployment.yml`: Path to your deployment YAML file within the repository.
-
-**Important Notes:**
-
-- Update the placeholder values for `CLUSTER_NAME`, `REGION`, and `NAMESPACE` with the appropriate secrets or environment variables defined in your repository settings.
-- Ensure the self-hosted runner user has permissions to execute the script (`~/scripts/build_deploy.sh`) and access the deployment file.
-
-**Additional Tips:**
-
-- Consider using conditional logic within the `build_deploy.sh` script to handle potential differences in deployment configurations for separate repositories.
-- Explore using environment variables within the script itself to provide further customization options.
-
-This updated workflow YAML file leverages the shared `build_deploy.sh` script for deployment, allowing you to manage common logic in one place while enabling deployment from both your repositories.
