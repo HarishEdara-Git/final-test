@@ -27,4 +27,4 @@ jobs:
         run: aws eks update-kubeconfig --name harisheks --region ap-south-1 --kubeconfig ~/.kube/config
 
       - name: Deploy to EKS Cluster
-        run: kubectl apply -f .github/workflows/deployment.yml -n my-namespace
+        run: kubectl apply -f deployment.yml -n my-namespace
