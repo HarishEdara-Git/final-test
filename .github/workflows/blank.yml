@@ -45,7 +45,7 @@ jobs:
         run: kubectl config view
 
       - name: Port forward to sample-service
-        run: kubectl port-forward service/sample-service 8080:80 -n ${{ env.NAMESPACE }} &
+        run: kubectl port-forward service/sample-service 8080:80
           
       - name: Deploy to EKS Cluster
         run: |
