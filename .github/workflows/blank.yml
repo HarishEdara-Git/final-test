@@ -10,11 +10,12 @@ env:
   CLUSTER_NAME: pll-test  # Replace with your EKS cluster name
   NAMESPACE: harish-ns  # Replace with your namespace
 
-jobs: 
-  deploy:
-    name: Deploy Pod and Service
-    runs-on: ubuntu-latest
-
+jobs:
+  build:
+    runs-on: self-hosted
+    container:
+      image: ubuntu:latest
+      
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
